@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.MemberMapper">
+
+	<resultMap type="MemberVO" id="memberResult">
+		<id property="mId" column="m_id"/>
+		<result property="mPw" column="m_pw"/>
+		<result property="mName" column="m_name"/>
+		<result property="mMail" column="m_mail"/>
+		<result property="mTel" column="m_tel"/>
+		<result property="mRegdate" column="m_regdate"/>
+	</resultMap>
+
+	<insert id="insertMember">
+		insert into t_member values(#{mId}, #{mPw}, #{mName}, #{mMail}, #{mTel}, now());
+	</insert>
+
+	<select id="selectMember" parameterType="java.lang.String" resultMap="memberResult">
+		select * from t_member where m_id = #{mId};
+	</select>
+
+</mapper>

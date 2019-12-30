@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.PhotoMapper">
+        
+	<resultMap type="PhotoVO" id="photoResult">
+		<id property="pNo" column="p_no" />
+		<result property="pName" column="p_name" />
+		<result property="pWriter" column="p_writer" />
+		<result property="pRegdate" column="p_regdate" />
+	</resultMap>
+
+	<insert id="insertPhoto" parameterType="PhotoVO">
+		insert into t_photo values(0, #{pName}, #{pWriter}, now());
+	</insert>
+	
+	<select id="selectPhotoList" resultMap="photoResult">
+		select * from t_photo where p_writer = #{id} order by p_no desc;
+	</select>
+
+	<delete id="deletePhoto">
+		delete from t_photo where p_no = #{pNo};
+	</delete>
+	
+	<select id="selectPhotoCount" resultType="int">
+		select count(*) from t_photo where p_writer = #{id};
+	</select>
+
+</mapper>
