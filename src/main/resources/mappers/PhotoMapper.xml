@@ -5,16 +5,17 @@
 	<resultMap type="PhotoVO" id="photoResult">
 		<id property="pNo" column="p_no" />
 		<result property="pName" column="p_name" />
+		<result property="pOriginName" column="p_origin_name" />
 		<result property="pWriter" column="p_writer" />
 		<result property="pRegdate" column="p_regdate" />
 	</resultMap>
 
 	<insert id="insertPhoto" parameterType="PhotoVO">
-		insert into t_photo values(0, #{pName}, #{pWriter}, now());
+		insert into t_photo values(0, #{pName}, #{pOriginName}, #{pWriter}, now());
 	</insert>
 	
 	<select id="selectPhotoList" resultMap="photoResult">
-		select * from t_photo where p_writer = #{id} order by p_no desc;
+		select * from t_photo where p_writer = #{id} order by p_no desc limit #{cri.pageStart}, #{cri.perPageNum};
 	</select>
 
 	<delete id="deletePhoto">

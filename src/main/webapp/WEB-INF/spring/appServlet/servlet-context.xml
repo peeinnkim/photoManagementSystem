@@ -35,14 +35,14 @@
 	</beans:bean> 
 	
 	<!-- intercepter -->
-<!--   	<beans:bean id="loginInterceptor" class="com.peeinn.interceptor.LoginInterceptor"></beans:bean>
+<!--    	<beans:bean id="loginInterceptor" class="com.peeinn.interceptor.LoginInterceptor"></beans:bean>
 	
 	<interceptors>
 		<interceptor>
 			<mapping path="/member/loginPost"/>
 			<beans:ref bean="loginInterceptor"/>
 		</interceptor>
-	</interceptors>  --> 
+	</interceptors>   -->
 	
 	
 </beans:beans>

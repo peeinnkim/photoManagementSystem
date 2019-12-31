@@ -11,7 +11,7 @@ public interface PhotoService {
 	public void deletePhoto(int pNo);
 	
 	
-	public List<PhotoVO> selectPhotoList(String id);
+	public List<PhotoVO> selectPhotoList(String id, Criteria cri);
 	public int selectPhotoCount(String id);
 
 }//PhotoService

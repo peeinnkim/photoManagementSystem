@@ -1,47 +1,87 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp"%>
+
+<style>
+	.greeting {
+		width: 100%;
+		text-align: center;
+		margin: 50px 0;
+	} 
+	.form-wrap {
+		width: 95%;
+		margin: 0 auto;
+		font-family: 'Gothic A1', sans-serif;
+		font-size: 13px;
+		font-weight: bold;
+	}
+	.form-wrap table {
+		width: 50%;
+		margin: 0 auto;
+	}
+	input[type='submit'] {
+		width: 50px;
+		height: 50px;
+		border: 3px solid yellow; 
+		background: #F361A6;
+		box-shadow: 2px 2px 2px grey;
+		color: white;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	.tb-label {
+		color: #212121;
+	}
+	.tb-input > input {
+		width: 95%;
+	}
+</style>
 	
 	<h1>JOIN</h1>   
+
+	<div class="greeting">
+		<h1>WELCOME TO PHOTO MANAGEMENT SYSTEM!</h1><br>
+		<p>PLEASE, JOIN US!</p>
+	</div>
 	   
 	<div class="form-wrap">
 		<form id="frm" action="join" method="post" onsubmit="return validCheck()">
 			<table>
 				<tr>
-					<td>아이디</td>
-					<td><input type="text" name="mId" value="${vo.mId}"></td>
+					<td class="tb-label">아이디</td>
+					<td class="tb-input"><input type="text" name="mId" value="${vo.mId}"></td>
 					<td>
-						<button>중복확인</button>
+						<button type="button" onclick="duplicateChk()">중복확인</button>
 						<span class="regInfo">영어, 숫자 6~15자</span>
 						<span class="error">아이디 입력.. 제대로..</span>
 					</td>
 				</tr>
 				<tr>
-					<td>비밀번호</td>
-					<td><input type="password" name="mPw"></td>
+					<td class="tb-label">비밀번호</td>
+					<td class="tb-input"><input type="password" name="mPw"></td>
 					<td>
 						<span class="regInfo">영어, 숫자, 특수문자(!@#$%^&*-_) 8~20자</span>
 						<span class="error">비밀번호 입력.. 제대로..</span>
 					</td>
 				</tr>
 				<tr>
-					<td>비밀번호 확인</td>
-					<td><input type="password" name="mPw2"></td>
+					<td class="tb-label">비밀번호 확인</td>
+					<td class="tb-input"><input type="password" name="mPw2"></td>
 					<td><span class="error">안맞잖아...</span></td>
 				</tr>
 				<tr>
-					<td>이름</td>
-					<td><input type="text" name="mName" value="${vo.mName}" maxlength="10"></td>
+					<td class="tb-label">이름</td>
+					<td class="tb-input"><input type="text" name="mName" value="${vo.mName}" maxlength="10"></td>
 					<td><span class="error">이름...제대로...입력...</span></td>
 				</tr>
 				<tr>
-					<td>이메일</td>
-					<td><input type="email" name="mMail" value="${vo.mMail}"></td>
+					<td class="tb-label">이메일</td>
+					<td class="tb-input"><input type="email" name="mMail" value="${vo.mMail}"></td>
 					<td><span class="error">이메일....제대로입력....</span></td>
 				</tr>
 				<tr>
-					<td>전화번호</td>
-					<td>
+					<td class="tb-label">전화번호</td>
+					<td class="tb-input">
 						<input type="tel" name="mTel" value="${vo.mTel}" maxlength="14" placeholder="010-0000-0000">
 					</td>
 					<td><span class="error">전화번호... 제대로....입력..</span></td>
@@ -56,6 +96,31 @@
 	</div>
 	
 	<script>
+		function duplicateChk(){
+			$.ajax({
+				url: "dupChk",
+				type: "post",
+				data: {"mId": $("input[name='mId']").val()},
+				dataType: "text",
+				success: function(res){
+					console.log(res);
+					
+					if(res == "available") {
+						alert("사용가능한 아이디입니다.");
+						$("button[type='button']").css("display", "none");
+						
+					} else if(res == "duplicated"){
+						alert("중복된 아이디입니다. 다른 아이디를 입력하세요.");
+					}
+				},
+				error: function(e){
+					console.log(e);
+				}
+				
+			})
+			return false;
+		}
+	
 		//유효성 검사
 		function validCheck(){
 			if(frm.mId.value == "") {
@@ -88,6 +153,11 @@
 				frm.mTel.focus();
 				return false;
 			}
+ 			if($("button[type='button']").css("display") != "none") {
+ 				alert("아이디 중복확인을 해주세요");
+ 				return false;
+ 			}
+ 			
 		}
 		
 		//id 유효성 검사
@@ -98,6 +168,7 @@
 		
 		$("input[name='mId']").focus(function(){
 			getFocus($(this));
+			$("button[type='button']").css("display", "inline-block");
 		})
 	
 		//pw 유효성 검사

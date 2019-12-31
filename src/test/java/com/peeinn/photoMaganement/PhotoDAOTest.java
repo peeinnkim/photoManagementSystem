@@ -18,13 +18,13 @@ public class PhotoDAOTest {
 	@Autowired
 	PhotoDAO dao;
 	
-	@Test
-	public void testList() {
-		List<PhotoVO> list = dao.selectPhotoList("mlmlml");
-		
-		for(PhotoVO p : list) {
-			System.out.println(p);
-		}
-	}
+//	@Test
+//	public void testList() {
+//		List<PhotoVO> list = dao.selectPhotoList("mlmlml");
+//		
+//		for(PhotoVO p : list) {
+//			System.out.println(p);
+//		}
+//	}
 	
 }//PhotoDAOTest

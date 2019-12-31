@@ -4,9 +4,13 @@ public class Criteria {
 	private int page; // 선택한 페이지 번호
 	private int perPageNum; // 한 페이지당 보일 게시물 번호
 
+	/*
+	  	(page-1) * perPageNum -> DB row index
+	 
+	 */
 	public Criteria() {
 		page = 1;
-		perPageNum = 15;
+		perPageNum = 10;
 	}
 
 	public Criteria(int page, int perPageNum) {

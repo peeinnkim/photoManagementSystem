@@ -19,14 +19,13 @@ public class PhotoServiceImpl implements PhotoService {
 	@Override
 	public void insertPhoto(List<PhotoVO> photos) {
 		for(PhotoVO p : photos) {
-			System.out.println(p);
 			dao.insertPhoto(p);
 		}
 	}
 
 	@Override
-	public List<PhotoVO> selectPhotoList(String id) {
-		return dao.selectPhotoList(id);
+	public List<PhotoVO> selectPhotoList(String id, Criteria cri) {
+		return dao.selectPhotoList(id, cri);
 	}
 
 	@Override

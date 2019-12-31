@@ -87,7 +87,6 @@ public class UploadFileUtils {
 		String file1 = filename.substring(0, 12);
 		String file2 = filename.substring(14);
 		file = new File(uploadPath + file1 + file2);
-		System.out.println(uploadPath + file1 + file2);
 		file.delete();
 	}
 

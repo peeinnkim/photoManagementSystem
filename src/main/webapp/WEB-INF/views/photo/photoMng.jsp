@@ -2,83 +2,139 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../include/header.jsp"%>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.5.3/handlebars.min.js"></script>
 <style>
+	.form-wrap {
+		width: 95%;
+		margin: 0 auto;
+	}
+	.upload-wrap {
+		font-size: 13px;
+		font-weight: bold;
+		background: #FFE08C;
+		padding: 20px 30px;
+		margin-bottom: 20px;
+	}
+	.upload-wrap > p {
+		margin: 5px 0;
+	}
 	.thmub-wrap {
 		height: 130px;
+	}
+	.list-wrap {
+		width: 74%;
+		margin: 0 auto;
+	}
+	.list-wrap > h2 {
+		width: 100%;
+		text-align: center;
+		margin: 50px 0 20px;
+	}
+	.pic-wrap {
+		overflow: hidden;
+		height: 350px;
 	}
 	.img-box {
 		position: relative;
 		float: left;
-		margin: 3px;
+		margin: 5px;
+		cursor: pointer;
+		overflow: hidden;
+		background: #E8D9FF;
+		padding: 8px;
+		font-family: 'Gothic A1', sans-serif;
+	}
+	.img-box > img {
+		width: 100px;
+		height: 100px;
 	}
 	.img-box > .delX {
 		position: absolute;
-		right: 0;
-		top: 16px;
+	    right: 0px;
+	    top: 0px;
 	}
 	.img-box > .imgDate {
 		font-size: 12px;
 		overflow: hidden;
 	}
+	.img-box > .imgName {
+		font-size: 10px;
+		overflow: hidden;
+		text-align: center;
+	}
+	.pagination > li {
+		float: left;
+		margin: 3px;
+	}
+	.pagination > li > a {
+		color: green;
+	}
+	.modal-wrap {
+		display: none;
+		position: fixed;
+		z-index: 1; 
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto; 
+		background-color: rgba(0,0,0,0.4);
+	}
+	.modal-wrap > .modal-img {
+		position: relative;
+		margin: 150px auto;
+	}
+	.modal-wrap > .modal-img > .modalX {
+	    position: absolute;
+	    right: 5px;
+	    top: 5px;
+	    cursor: pointer;
+	    width: 30px;
+	    height: 30px;
+	    line-height: 25px;
+	    text-align: center;
+	    background: white;
+	    border: 4px solid #F361A6;
+	    border-radius: 50px 50px 50px 50px;
+	    box-shadow: 1px 1px 2px grey;
+	}
 </style>
 
 	<h1>PHOTO</h1>
-	
 	<div class="form-wrap">
 		<form id="frm" enctype="multipart/form-data">
-			<input type="text" name='pWriter' value="${Auth}">
+			<input type="hidden" name='pWriter' value="${Auth}">
 			<div class="upload-wrap">
-				<p><small>버튼을 누르거나 화면에 사진을 드래그 해서 추가해보라고</small></p>
+				<p>버튼을 눌러 사진을 추가하세요</p>
 				<p>
 					<input type="file" name="files" multiple="multiple">
 					<input type="submit" value="추가">
+					<input type="reset" value="취소">
 				</p>
 				
-				<div class="thmub-wrap">
-					
-				</div>
-			</div>
-			
-			<div class="list-wrap">
-				<h2>PHOTO LIST</h2>
-				<div class="pic-wrap">
-					<c:forEach var="pic" items="${list}">
-						<div class="img-box">
-		 					<p class="imgDate">${pic.pName}<fmt:formatDate value="${pic.pRegdate}" pattern="yyyy-MM-dd"/></p>
-								<img src="${pageContext.request.contextPath}/photo/display?filename=${pic.pName}">
-							<span class="delX" data-src="${pic.pName}" data-no="${pic.pNo}">❌</span>
-						</div>   
-					</c:forEach>          
-				</div>
-				<ul class="pagination"></ul>
-				<div class="big-img">
-					
-				</div>
+				<!-- 썸네일 영역 -->
+				<div class="thmub-wrap"></div>
 			</div>
 		</form>
+		
+		<!-- DB에 저장된 사진 리스트 -->
+		<div class="list-wrap">
+			<h2>PHOTO LIST</h2>
+
+			<div class="pic-wrap"></div>
+		
+			<ul class="pagination"></ul> <!-- 페이지네이션 -->
+		
+			<div class="modal-wrap"> <!-- 이미지 클릭시 나오는 모달창 -->
+				<div class="modal-img"></div>
+			</div>
+		</div>
 	</div>
 
-
-	<script id="reply_template" type="text/x-handlebars-template">
-		{{#list}}
-		<li class="replyLi">
-			<div class="item">
-				<span class="rno">{{rno}}</span> : <span class="writer">{{replyer}}</span><br>
-				<span class="content">{{replytext}}</span>
-				<div class="btnWrap">
-					<button class="btnMod">수정</button>
-					<button class="btnDel">삭제</button>
-				</div>
-			</div>
-		</li>
-		{{/list}}
-	</script>
-
-
 	<script>
+		var nPage = 1; //pagination -> 현재 선택한 페이지
+	
 		/* 사진 리스트 불러오기 */
-		getPhotoList();
+		getPhotoList(nPage);
 	
 		/* 썸네일 뜨기 */
 		function makeThumbnail(file){
@@ -102,19 +158,9 @@
 			makeThumbnail(file);
 		})
 		
-		/* $("body").on("dragenter dragover", function(e){
-			console.log("drag event");
-			e.preventDefault();
-		})//drag event
-		
-		$("body").on("drop", function(e){
-			console.log("drop event");
-			e.preventDefault();
-			
-			var files = e.originalEvent.dataTransfer.files; 
-			makeThumbnail(files);
-			formData.append("files", files);
-		})//drop event */
+		$("input[type='reset']").click(function(){
+			$(".thmub-wrap").empty();
+		})
 		
 		/* 업로드 하기 */
 		$("#frm").submit(function(){
@@ -147,40 +193,74 @@
 		
 		/* X 누르면 삭제되기 */
 		$(document).on("click", ".delX", function(){
-			var formData = new FormData();
-			formData.append("pName", $(this).attr("data-src"));
-			formData.append("pNo", $(this).attr("data-no"));
+			var result = confirm("정말 삭제하시겠습니까?");
 			
-			$.ajax({
-				url: "delete",
-				type: "post",
-				data: formData,
-				processData: false,
-				contentType: false,
-				success: function(res){
-					console.log(res);
+			if(result == true) {
+				var formData = new FormData();
+				formData.append("pName", $(this).attr("data-src"));
+				formData.append("pNo", $(this).attr("data-no"));
 				
-					if(res == "success") {
-						getPhotoList();
-						
-					} else if (res == "fail") {
-						alert("사진 삭제에 실패하였습니다.");
+				$.ajax({
+					url: "delete",
+					type: "post",
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(res){
+						console.log(res);
+					
+						if(res == "success") {
+							getPhotoList();
+							
+						} else if (res == "fail") {
+							alert("사진 삭제에 실패하였습니다.");
+						}
+					},
+					error: function(e){
+						console.log(e);
 					}
-				},
-				error: function(e){
-					console.log(e);
-				}
-			})//ajax
+				})//ajax
+			} else {
+				return false;
+			}
+		})
+	
+		/* 이미지 클릭 시 큰 이미지 나오게 하기 */
+		$(document).on("click", ".img-box > img", function(){
+			var fullSrc = $(this).nextAll(".delX").attr("data-src");
+			var src1 = fullSrc.substring(0, 12);
+			var src2 = fullSrc.substring(14);
+			var src = src1 + src2;
+
+			var $img = $("<img>").attr("src", "${pageContext.request.contextPath}/photo/display?filename="+src);
+			var $modalX = $("<span>").addClass("modalX").append("❌");
 			
+			$(".modal-img").empty();
+			$(".modal-img").append($img).append($modalX);
+			$(".modal-wrap").css("display", "block");
+			$img.load(function(){
+				$(".modal-img").css({"width":$(this).width(), "height":$(this).height()});
+			})
+		})
+		
+		/* 큰 이미지에서 X 누르면 사라지기 */
+		$(document).on("click", ".modalX", function(){
+			$(".modal-wrap").css("display", "none");
+		})
+		
+		/* 페이지 누르면 넘어가기 */
+		$(document).on("click", ".pagination > li", function(){
+			nPage = $(this).children().text();
+			getPhotoList(nPage);
 		})
 		
 		/* 추가된 리스트 뿌리기 */
-		function getPhotoList() {
+		function getPhotoList(page) {
 			var formData = new FormData();
 			formData.append("id", $("input[name='pWriter']").val());
 			
 			$.ajax({
-				url: "list",
+				url: "list/" + page,
 				type: "post",
 				data: formData,
 				processData: false,
@@ -189,41 +269,19 @@
 					console.log(res);
  					$(".pic-wrap").empty();
 					
-					$(res).each(function(i, obj){
+ 					/* PHOTO LIST */
+					$(res.list).each(function(i, obj){
 						var $img = $("<img>").attr("src", "${pageContext.request.contextPath}/photo/display?filename=" + obj.pName);
 						var $x = $("<span>").addClass("delX").append("❌").attr("data-no", obj.pNo).attr("data-src", obj.pName);
-						var $p = $("<p>").addClass("imgDate").append(formatDate(obj.pRegdate));
-						var $imgDiv = $("<div>").addClass("img-box").append($p).append($img).append($x);
+						var $p1 = $("<p>").addClass("imgDate").append(formatDate(obj.pRegdate));
+						var $p2 = $("<p>").addClass("imgName").append(obj.pOriginName);
+						var $imgDiv = $("<div>").addClass("img-box").append($p1).append($img).append($p2).append($x);
+						
 						$(".pic-wrap").append($imgDiv);
-					})                
-				},
-				error: function(e){
-					console.log(e);
-				}
-			})//ajax
-		}//getPhotoList
-		
-		
-		/*----------- PAGINATION -------------*/
-		var nPage = 1; //현재 선택한 페이지 번호값을 가짐
-		
-		//page번호 받아서 리스트 부르는 메소드
-		function getPageList(page) {
-		 	$.ajax({
-				url: "replies/" + $("input[name='bno']").val() + "/" + page,
-				type: "get",
-				dataType: "json",
-				success: function(res){
-					console.log(res);
-				 	$("#replyList").text("");
-				 	
-				 	var source = $("#reply_template").html();
-				 	var func = Handlebars.compile(source);
-				 	var str = func(res);
-				 	
-				 	$("#replyList").append(str);
-				 	
-				 	var startPage = res.pageMaker.startPage;
+					})    
+					
+					/* PAGINATION */
+					var startPage = res.pageMaker.startPage;
 				 	var endPage = res.pageMaker.endPage;
 				 	$(".pagination").empty();
 				 	
@@ -251,14 +309,14 @@
 				 		var $a = $("<a>").attr("href", "#").attr("data-page", endPage+1).text("▶");
 				 		$li.append($a);
 						$(".pagination").append($li);
-				 	}
- 					
+				 	} 
+					
 				},
 				error: function(e){
 					console.log(e);
 				}
-			})		
-		}//function end
+			})//ajax
+		}//getPhotoList
 		
 		//날짜 포맷 바꾸기
 		function formatDate(date) { 

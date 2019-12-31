@@ -13,17 +13,24 @@
 	<div id="container">
 		<header>
 			<div id="inner-header">
-				<div class="header-title">TITLE</div>
+				<div class="header-title">
+					PHOTO<br>MANAGEMENT<br>SYSTEM
+				</div>
 				<div class="header-top">
 					<ul>
+					<c:if test="${Auth != null}">
+						<li><small>WELCOME!</small> <b>${Auth}</b></li>
+					</c:if>
+					<c:if test="${Auth == null}">
 						<li><a href="${pageContext.request.contextPath}/member/join">JOIN</a></li>
 						<li><a href="${pageContext.request.contextPath}/member/login">LOGIN</a></li>
+					</c:if>
 					</ul>
 				</div>
 				<div class="header-bottom">
 					<ul>
-						<li><a href="${pageContext.request.contextPath}">메인</a></li>
-						<li><a href="${pageContext.request.contextPath}/photo/photoMng">사진 관리</a></li>
+						<li><a href="${pageContext.request.contextPath}">HOME</a></li>
+						<li><a href="${pageContext.request.contextPath}/photo/photoMng">PHOTO</a></li>
 					</ul>
 				</div>
 			</div>

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.peeinn.domain.MemberVO;
+
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
@@ -13,15 +15,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 		System.out.println("----------postHandle");
 		Object loginID = modelAndView.getModel().get("loginId");
-		Object errorMsg = modelAndView.getModel().get("error");
+		System.out.println("Interceptor ->>>" + loginID);
 		
 		if(loginID != null) {
 			//session 영역에 Auth키 만들어서 userid 값 넣음
-			request.getSession().setAttribute("Auth", loginID);
+			MemberVO mem = (MemberVO)loginID;
+			request.getSession().setAttribute("Auth", mem.getmId());
 			System.out.println("로그인 완료");
 			response.sendRedirect(request.getContextPath()); //home으로 이동
-		} else if(errorMsg != null) {
-			response.sendRedirect(request.getContextPath() + "/member/login");
 		}
 	}  
 
