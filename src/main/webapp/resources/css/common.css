@@ -42,7 +42,7 @@ header {
 	letter-spacing: 0.15em;
 	line-height: 1.5em;
 	color: #F361A6;
-	text-shadow: 2px 2px 0px yellow, 3px 3px 0px yellow, 5px 5px 0px yellow;
+	text-shadow: 2px 2px 0px yellow, 3px 3px 0px yellow;
 }
 #inner-header > .header-top > ul > li {
 	display: inline;

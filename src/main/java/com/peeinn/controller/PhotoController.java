@@ -43,6 +43,8 @@ public class PhotoController {
 	@RequestMapping(value="photoMng", method=RequestMethod.GET)
 	public void photoMngGet() {
 		logger.info("--------- photoMngGet ---------");
+		
+		
 	}
 	
 	@ResponseBody
