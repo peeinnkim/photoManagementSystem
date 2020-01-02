@@ -177,7 +177,7 @@
 				
 					if(res == "success") {
 						$(".thmub-wrap").empty();						
-						getPhotoList();
+						getPhotoList(1);
 						
 					} else if (res == "fail") {
 						$(".pic-wrap").empty();
@@ -210,7 +210,8 @@
 						console.log(res);
 					
 						if(res == "success") {
-							getPhotoList();
+							nPage = $(".on").text();
+							getPhotoList(nPage);
 							
 						} else if (res == "fail") {
 							alert("사진 삭제에 실패하였습니다.");
